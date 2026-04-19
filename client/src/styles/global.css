@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body, #root { 
+  background: #030c1a; 
+  color: #dde8f8; 
+  font-family: 'Exo 2', sans-serif; 
+  min-height: 100vh; 
+  overflow-x: hidden; 
+}
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.glass,
+.kpi-card {
+  background: linear-gradient(145deg, rgba(7, 20, 42, 0.92), rgba(3, 12, 26, 0.78));
+  border: 1px solid rgba(0, 212, 255, 0.13);
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+}
+
+.kpi-card {
+  padding: 18px;
+}
+
+.nav-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #92a4c2;
+  padding: 11px 10px;
+  margin-bottom: 6px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: #dde8f8;
+  background: rgba(0, 212, 255, 0.08);
+  border-color: rgba(0, 212, 255, 0.16);
+}
+
+.btn-primary {
+  border: 0;
+  border-radius: 8px;
+  color: #02111f;
+  font-weight: 900;
+  background: linear-gradient(135deg, #00d4ff, #10b981);
+  box-shadow: 0 10px 24px rgba(0, 212, 255, 0.16);
+}
+
+.btn-primary:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.input-field {
+  width: 100%;
+  border: 1px solid rgba(0, 212, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(3, 12, 26, 0.78);
+  color: #dde8f8;
+  padding: 11px 12px;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.12);
+}
+
+.insight-card {
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.ins-warning { border-left: 3px solid #f59e0b; }
+.ins-success { border-left: 3px solid #10b981; }
+.ins-info { border-left: 3px solid #00d4ff; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+.fade1,
+.fade2,
+.fade3,
+.fade4,
+.slide {
+  animation: fadeIn 0.35s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
