@@ -2,9 +2,28 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+
+const allowedOrigins = [
+  "https://blostemai.vercel.app",
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(",") : []),
+].map((origin) => origin.trim()).filter(Boolean);
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(express.json());
-// Allow requests from your Vercel frontend (use '*' for the hackathon, restrict it later)
-app.use(cors({ origin: "*" })); 
+
+app.get("/", (req, res) => {
+  res.json({ status: "ok", service: "blostem-ai-api" });
+});
 
 // Helper function to determine risk label
 const getRiskLabel = (r) => r >= 65 ? "High" : r >= 35 ? "Medium" : "Low";
