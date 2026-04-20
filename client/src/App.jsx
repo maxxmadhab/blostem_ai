@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
-import TopBar from "./components/TopBar";
+import TopBar from "./components/Topbar";
 import Dashboard from "./components/Dashboard";
 import ChurnPredictor from "./components/ChurnPredictor";
 import Segmentation from "./components/Segmentation";
