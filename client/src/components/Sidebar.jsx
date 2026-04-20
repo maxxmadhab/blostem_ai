@@ -16,7 +16,7 @@ export default function Sidebar({ page, setPage }) {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg,${C.cyan},${C.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: `0 0 18px rgba(0,212,255,0.28)` }}>⬡</div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 900, letterSpacing: "-0.02em", color: C.text }}>NEXUS</div>
+            <div style={{ fontSize: 15, fontWeight: 900, letterSpacing: "-0.02em", color: C.text }}>Maxx Ai</div>
             <div style={{ fontSize: 9.5, color: C.muted, letterSpacing: "0.12em", fontWeight: 600 }}>ANALYTICS AI</div>
           </div>
         </div>
