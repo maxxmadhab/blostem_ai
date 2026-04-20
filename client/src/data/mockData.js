@@ -96,4 +96,5 @@ export const riskColor = (r) => r >= 65 ? C.red : r >= 35 ? C.orange : C.green;
 export const riskLabel = (r) => r >= 65 ? "High" : r >= 35 ? "Medium" : "Low";
 
 // ─── API base URL (set via Vercel env var) ──────────────────────────────────
-export const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+export const DEFAULT_API_BASE = "https://blostem-ai-1.onrender.com";
+export const API_BASE = (import.meta.env.VITE_API_URL || DEFAULT_API_BASE).replace(/\/+$/, "");
