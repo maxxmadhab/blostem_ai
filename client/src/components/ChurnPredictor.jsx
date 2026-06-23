@@ -3,6 +3,7 @@ import { API_BASE, C, riskColor } from "../data/mockData";
 import Gauge from "./Gauge";
 
 const HEALTH_TIMEOUT_MS = 20000;
+const HEALTH_RETRY_DELAYS_MS = [0, 12000, 24000];
 
 const FIELDS = [
   { key: "tenure", label: "Tenure (months)", type: "number", ph: "e.g. 24" },
@@ -96,11 +97,28 @@ export default function ChurnPredictor() {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        const res = await fetch(`${API_BASE}/health`, {
-          signal: AbortSignal.timeout(HEALTH_TIMEOUT_MS),
-        });
+        let healthOk = false;
 
-        if (!res.ok) {
+        for (const delay of HEALTH_RETRY_DELAYS_MS) {
+          if (delay > 0) {
+            await new Promise((resolve) => setTimeout(resolve, delay));
+          }
+
+          try {
+            const res = await fetch(`${API_BASE}/health`, {
+              signal: AbortSignal.timeout(HEALTH_TIMEOUT_MS),
+            });
+
+            if (res.ok) {
+              healthOk = true;
+              break;
+            }
+          } catch {
+            // Render free-tier services can need more than one probe while waking.
+          }
+        }
+
+        if (!healthOk) {
           setBackendStatus("down");
           return;
         }
