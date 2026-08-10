@@ -11,6 +11,7 @@ The ability to take a chaotic dataset (like 7,000+ rows of customer behavior fro
 🚀 Features & Modules
 ⚡ AI Churn Prediction (The Flagship)
 The Engine: A real Machine Learning model (Logistic Regression) trained on a dataset of 7,043 customers.
+IBM Telco Customer Churn Dataset (also called Telco Customer Churn Dataset)
 
 The Output: Provides a real-time probability score (%) of a customer leaving.
 
