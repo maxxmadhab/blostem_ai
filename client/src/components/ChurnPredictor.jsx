@@ -179,7 +179,7 @@ export default function ChurnPredictor() {
     };
 
     try {
-      const res = await fetch(`${API_BASE}/predict`, {
+      const res = await fetchWithTimeout(`${API_BASE}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -191,9 +191,12 @@ export default function ChurnPredictor() {
       }
 
       const data = await res.json();
+      setBackendError(null);
+      setBackendStatus("ok");
       setResult(data);
     } catch (e) {
-      setError(e.message || "Could not connect to prediction server.");
+      setBackendError(e.name === "AbortError" ? "Prediction request timed out" : e.message);
+      setError(`${e.message || "Could not connect to prediction server."} (${API_BASE})`);
     } finally {
       setLoading(false);
     }
@@ -244,7 +247,7 @@ export default function ChurnPredictor() {
         />
         <span style={{ color: C.mutedLight }}>
           {backendStatus === "ok" && "ML Backend connected - Logistic Regression trained on Telco Churn dataset (7,043 rows)"}
-          {backendStatus === "down" && `ML Backend offline - Unable to reach ${API_BASE}${backendError ? ` (${backendError})` : ""}`}
+          {backendStatus === "down" && `ML status check failed - predictions will still try ${API_BASE}${backendError ? ` (${backendError})` : ""}`}
           {backendStatus === "checking" && `Connecting to ML backend at ${API_BASE}...`}
         </span>
       </div>
@@ -300,7 +303,7 @@ export default function ChurnPredictor() {
           <button
             className="btn-primary"
             onClick={predict}
-            disabled={loading || backendStatus !== "ok"}
+            disabled={loading}
             style={{ marginTop: 18, width: "100%", padding: "12px", fontSize: 14 }}
           >
             {loading ? (
