@@ -5,6 +5,17 @@ import Gauge from "./Gauge";
 const HEALTH_TIMEOUT_MS = 20000;
 const HEALTH_RETRY_DELAYS_MS = [0, 12000, 24000];
 
+async function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), HEALTH_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 const FIELDS = [
   { key: "tenure", label: "Tenure (months)", type: "number", ph: "e.g. 24" },
   { key: "monthlyCharges", label: "Monthly Charges ($)", type: "number", ph: "e.g. 79.99" },
@@ -91,6 +102,7 @@ export default function ChurnPredictor() {
   const [serverMetrics, setServerMetrics] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(true);
   const [backendStatus, setBackendStatus] = useState("checking");
+  const [backendError, setBackendError] = useState(null);
 
   const setField = (key, value) => setForm((current) => ({ ...current, [key]: value }));
 
@@ -98,6 +110,7 @@ export default function ChurnPredictor() {
     const checkBackend = async () => {
       try {
         let healthOk = false;
+        let healthError = null;
 
         for (const delay of HEALTH_RETRY_DELAYS_MS) {
           if (delay > 0) {
@@ -105,30 +118,31 @@ export default function ChurnPredictor() {
           }
 
           try {
-            const res = await fetch(`${API_BASE}/health`, {
-              signal: AbortSignal.timeout(HEALTH_TIMEOUT_MS),
-            });
+            const res = await fetchWithTimeout(`${API_BASE}/health`);
 
             if (res.ok) {
               healthOk = true;
+              healthError = null;
               break;
             }
-          } catch {
+            healthError = `Health check returned ${res.status}`;
+          } catch (e) {
+            healthError = e.name === "AbortError" ? "Health check timed out" : e.message;
             // Render free-tier services can need more than one probe while waking.
           }
         }
 
         if (!healthOk) {
+          setBackendError(healthError);
           setBackendStatus("down");
           return;
         }
 
+        setBackendError(null);
         setBackendStatus("ok");
 
         try {
-          const metricsRes = await fetch(`${API_BASE}/metrics`, {
-            signal: AbortSignal.timeout(HEALTH_TIMEOUT_MS),
-          });
+          const metricsRes = await fetchWithTimeout(`${API_BASE}/metrics`);
 
           if (metricsRes.ok) {
             const metrics = await metricsRes.json();
@@ -230,7 +244,7 @@ export default function ChurnPredictor() {
         />
         <span style={{ color: C.mutedLight }}>
           {backendStatus === "ok" && "ML Backend connected - Logistic Regression trained on Telco Churn dataset (7,043 rows)"}
-          {backendStatus === "down" && `ML Backend offline - Unable to reach ${API_BASE}`}
+          {backendStatus === "down" && `ML Backend offline - Unable to reach ${API_BASE}${backendError ? ` (${backendError})` : ""}`}
           {backendStatus === "checking" && `Connecting to ML backend at ${API_BASE}...`}
         </span>
       </div>
