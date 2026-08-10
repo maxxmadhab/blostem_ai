@@ -98,7 +98,7 @@ export const riskLabel = (r) => r >= 65 ? "High" : r >= 35 ? "Medium" : "Low";
 // ─── API base URL (set via Vercel env var) ──────────────────────────────────
 export const DEFAULT_API_BASE = "https://blostem-ai-0504.onrender.com";
 export const API_BASE = (
-  import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_ML_API_URL ||
+  import.meta.env.VITE_API_URL ||
   DEFAULT_API_BASE
 ).replace(/\/+$/, "");
